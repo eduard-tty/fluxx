@@ -1,0 +1,18 @@
+* DONE Add all cards
+* DONE Finish meets
+* DONE player_meets_goal take other playeres keepers into account
+* TODO Implement rules
+* TODO Implement Actions
+** TODO make draw1 and play1 return
+* TODO Ask player for moves
+* TODO split human/computer players
+** TODO Ask human player for moves
+** TODO Implement AI
+* TODO type to cover valid card id atoms
+* TODO dialyzer again
+* TODO improve emacs environment
+* TODO Opimize players ring
+* TODO better tests
+** TODO Test a sep file
+* TODO move display to sep module
+* TODO make file & beans in sep folder
