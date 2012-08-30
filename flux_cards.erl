@@ -141,7 +141,8 @@ play_count({rule, 'Play 5'            }, _) -> 5;
 play_count({rule, 'X = X + 1'         }, N) -> N+1;
 play_count({rule, 'Rich Bonus'        }, N) -> N+1; % todo condition
 play_count({rule, 'First Play Random' }, _) -> 2;
-play_count({rule, _                   }, N) -> N.
+play_count({rule, _                   }, N) -> N;
+play_count({goal, _                   }, N) -> N.
 
 -spec applies(rule(), board(), player()) -> boolean().
 applies({rule, 'No-Hand Bonus'}, _     , Player) -> 0 == length(Player#player.hand);
