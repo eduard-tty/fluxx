@@ -31,11 +31,6 @@ take_turn(Board)                   ->
     { Board2, NPlays } = apply_rules(Board),
     handle_plays(Board2, NPlays).
 
-% implement for real
-% draw N
-% play N
-% cover keeprs
-
 -spec apply_rules(board()) -> { board(), pos_integer() }.
 apply_rules(Board) ->
     [ Player | Players ] = Board#board.players,
