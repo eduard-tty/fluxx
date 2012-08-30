@@ -132,7 +132,6 @@ draw_count({rule, 'No-Hand Bonus' }, N) -> 3+N; % todo condition
 draw_count({rule, _               }, N) -> N;
 draw_count({goal, _               }, N) -> N.
 
-
 -spec play_count(rule(), non_neg_integer() ) -> non_neg_integer().
 play_count({rule, 'Play 1'            }, _) -> 1;
 play_count({rule, 'Play 2'            }, _) -> 2;
@@ -140,7 +139,7 @@ play_count({rule, 'Play 3'            }, _) -> 3;
 play_count({rule, 'Play 4'            }, _) -> 4;
 play_count({rule, 'Play 5'            }, _) -> 5;
 play_count({rule, 'X = X + 1'         }, N) -> N+1;
-play_count({rule, 'Rich Bonus'        }, N) -> N+1; 
+play_count({rule, 'Rich Bonus'        }, N) -> N+1; % todo condition
 play_count({rule, 'First Play Random' }, _) -> 2;
 play_count({rule, _                   }, N) -> N.
 

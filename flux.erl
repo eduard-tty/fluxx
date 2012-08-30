@@ -40,21 +40,19 @@ take_turn(Board)                   ->
 apply_rules(Board) ->
     [ Player | Players ] = Board#board.players,
     D = draw_count(Board, Player),
-    L - length(Board#board.deck)
+    L = length(Board#board.deck),
     case L >= D of
         true  -> 
             { Cards, Deck } = lists:split(D, Board#board.deck);
         false -> 
-            Cards1 = Board.#board.deck,
-            Deck1 = shuffle(Board#board.discard)),
-            { Cards2, Deck2 } = lists:split(D-L, Deck1);           
+            Cards1 = Board#board.deck,
+            Deck1 = shuffle(Board#board.discard),
+            { Cards2, Deck2 } = lists:split(D-L, Deck1),
             Cards = Cards1 ++ Cards2,
-            Deck = Deck2, 
+            Deck = Deck2
     end,
     NewHand = Cards ++ Player#player.hand,
-    { Board#board{deck=Deck, players=[Player#player{hand=NewHand}|Players]}, play_count(BOard, Player) }. 
-    
-
+    { Board#board{deck=Deck, players=[Player#player{hand=NewHand}|Players]}, play_count(Board, Player) }. 
 
 -spec draw_count(board(), player()) -> integer().
 draw_count(Board, Player) -> 
