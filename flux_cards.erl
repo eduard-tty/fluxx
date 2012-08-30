@@ -1,5 +1,5 @@
 -module(flux_cards).
--export([covers/2, meets/3, deck/0, start_rules/0, draw_count/2, play_count/2]).
+-export([covers/2, meets/3, deck/0, start_rules/0, draw_count/2, play_count/2, applies/3]).
 -import(shuffle,[shuffle/1]).
 
 -include("flux.hrl").
@@ -92,16 +92,10 @@ a_but_not_b(A,B, #player{keepers=Keepers}, Board) ->
     lists:member(A, Keepers) andalso not( lists:member(B,AllKeepers)).
 
 -spec most_cards_in_hand(player(), board()) -> boolean().
-most_cards_in_hand(Player, Board) -> max_property(Player, Board, fun(P) -> length(P#player.hand) end).
+most_cards_in_hand(Player, Board) -> is_maximal(Player, Board, fun(P) -> length(P#player.hand) end).
 
 -spec most_keepers(player(), board()) -> boolean().
-most_keepers(Player, Board) ->  max_property(Player, Board, fun(P) -> length(P#player.keepers) end).
-
--spec max_property(player(), board(), fun( ( player() ) -> integer() ) ) -> boolean().
-max_property(Player, Board, Property) ->
-    N = Property(Player),
-    M = lists:foldl(fun (P,Mn) -> max(Mn, Property(P)) end, 0, Board#board.players),
-    N > M. 
+most_keepers(Player, Board) ->  is_maximal(Player, Board, fun(P) -> length(P#player.keepers) end).
 
 -spec covers(atom(), atom()) -> boolean().
 covers(X, X)           -> true;
@@ -133,9 +127,11 @@ draw_count({rule, 'Draw 3'        }, _) -> 3;
 draw_count({rule, 'Draw 4'        }, _) -> 4;
 draw_count({rule, 'Draw 5'        }, _) -> 5;
 draw_count({rule, 'X = X + 1'     }, N) -> N+1;
-draw_count({rule, 'Poor Bonus'    }, _) -> N+1; % todo condition
-draw_count({rule, 'No-Hand Bonus' }, _) -> 3+N; % todo condition
-draw_count({rule, _               }, N) -> N.
+draw_count({rule, 'Poor Bonus'    }, N) -> N+1; % todo condition
+draw_count({rule, 'No-Hand Bonus' }, N) -> 3+N; % todo condition
+draw_count({rule, _               }, N) -> N;
+draw_count({goal, _               }, N) -> N.
+
 
 -spec play_count(rule(), non_neg_integer() ) -> non_neg_integer().
 play_count({rule, 'Play 1'            }, _) -> 1;
@@ -144,6 +140,24 @@ play_count({rule, 'Play 3'            }, _) -> 3;
 play_count({rule, 'Play 4'            }, _) -> 4;
 play_count({rule, 'Play 5'            }, _) -> 5;
 play_count({rule, 'X = X + 1'         }, N) -> N+1;
-play_count({rule, 'Rich Bonus'        }, _) -> N+1; % todo condition
-play_count({rule, 'First Play Random' }, _) -> 2
+play_count({rule, 'Rich Bonus'        }, N) -> N+1; 
+play_count({rule, 'First Play Random' }, _) -> 2;
 play_count({rule, _                   }, N) -> N.
+
+-spec applies(rule(), board(), player()) -> boolean().
+applies({rule, 'No-Hand Bonus'}, _     , Player) -> 0 == length(Player#player.hand);
+applies({rule, 'Poor Bonus'   }, Board , Player) -> is_minimal(Player, Board, fun(P) -> length(P#player.keepers) end );
+applies({rule, 'Rich Bonus'   }, Board , Player) -> is_maximal(Player, Board, fun(P) -> length(P#player.keepers) end );
+applies( _                     ,  _    , _     ) -> true.
+                            
+-spec is_maximal(player(), board(), fun( ( player() ) -> integer() ) ) -> boolean().
+is_maximal(Player, Board, Property) ->
+    N = Property(Player),
+    M = lists:foldl(fun (P,Mn) -> max(Mn, Property(P)) end, 0, Board#board.players),
+    N > M. 
+
+-spec is_minimal(player(), board(), fun( ( player() ) -> integer() ) ) -> boolean().
+is_minimal(Player, Board, Property) ->
+    N = Property(Player),
+    M = lists:foldl(fun (P,Mn) -> min(Mn, Property(P)) end, 0, Board#board.players),
+    N < M. 

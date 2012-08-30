@@ -38,18 +38,33 @@ take_turn(Board)                   ->
 
 -spec apply_rules(board()) -> { board(), pos_integer() }.
 apply_rules(Board) ->
-    D = draw_count(Board#board.rules),
     [ Player | Players ] = Board#board.players,
-    { Cards, Deck } = lists:split(D, Board#board.deck),
-    NewHand = [Cards | Player#player.hand ],
-    { Board#board{deck=Deck, players=[Player#player{hand=NewHand}|Players]}, 1 }. 
+    D = draw_count(Board, Player),
+    L - length(Board#board.deck)
+    case L >= D of
+        true  -> 
+            { Cards, Deck } = lists:split(D, Board#board.deck);
+        false -> 
+            Cards1 = Board.#board.deck,
+            Deck1 = shuffle(Board#board.discard)),
+            { Cards2, Deck2 } = lists:split(D-L, Deck1);           
+            Cards = Cards1 ++ Cards2,
+            Deck = Deck2, 
+    end,
+    NewHand = Cards ++ Player#player.hand,
+    { Board#board{deck=Deck, players=[Player#player{hand=NewHand}|Players]}, play_count(BOard, Player) }. 
     
--spec draw_count([rule()]) -> integer().
-draw_count(Rules) -> foldl(fun flux_cards:draw_count/2, 0 ,Rules).
-
-  
 
 
+-spec draw_count(board(), player()) -> integer().
+draw_count(Board, Player) -> 
+    Rules = lists:filter( fun(R) -> flux_cards:applies(R, Board, Player) end, Board#board.rules ),
+    lists:foldl(fun flux_cards:draw_count/2, 0 ,Rules).
+
+-spec play_count(board(), player()) -> integer().
+play_count(Board, Player) -> 
+    Rules = lists:filter( fun(R) -> flux_cards:applies(R, Board, Player) end, Board#board.rules ),
+    lists:foldl(fun flux_cards:play_count/2, 0 ,Rules).
 
 
 -spec handle_plays(board(), pos_integer()) -> { contignue, board() } | { win, player(), board() }.
@@ -67,14 +82,10 @@ handle_plays(Board, N) ->
 % Implement for real, ask player
 -spec pick_plays(board(),pos_integer()) -> [card()].
 pick_plays(Board, N) ->
-    [ Player | _ ] = Board#board.players, % hd
+    [ Player | _ ] = Board#board.players,
     Hand = Player#player.hand,
-    Plays = lists:sublist(shuffle(Hand),min(N,length(Hand))),
-    Love = {keeper, love},
-    case lists:member(Love, Hand) of 
-	true  -> [Love];
-	false -> Plays 
-    end.
+    lists:sublist(shuffle(Hand),min(N,length(Hand))).
+
 
 -spec play_card(card(),board()) -> board().
 play_card(Card={keeper, _ }, Board) ->
