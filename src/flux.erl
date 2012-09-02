@@ -1,6 +1,5 @@
 -module(flux).
 -export([play/0, play/1]).
--export([test/0]).
 -import(flux_cards).
 -import(shuffle,[shuffle/1]).
 -include("../include/flux.hrl").
