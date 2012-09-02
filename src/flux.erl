@@ -3,7 +3,7 @@
 -export([test/0]).
 -import(flux_cards).
 -import(shuffle,[shuffle/1]).
--include("flux.hrl").
+-include("../include/flux.hrl").
 
 -spec play() -> done.
 play() -> play(2).
@@ -202,36 +202,3 @@ debug(S) -> io:format("DEBUG: ~p~n", [S]), ok.
 -spec press_enter() -> ok.
 press_enter() -> io:get_line("Press Enter to contignue"), io:nl(), ok.
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-test_winners() ->
-    P1 = #player{name="Player 1", hand=[], keepers=[{keeper, love}]},
-    P2 = #player{name="Player 2", hand=[], keepers=[{keeper, peace}]},
-    B = #board{rules=[{goal, allYouNeedIsLove} ], players=[P1,P2]},
-    [P1] = winners(B),
-    ok.
-
-test_winners_for_goal() -> 
-    G = {goal, allYouNeedIsLove}, 
-    P1 = #player{name="Player 1", keepers=[{keeper, love}]},
-    P2 = #player{name="Player 2", keepers=[{keeper, peace}]},
-    [P1] = winners_for_goal(G, [P2,P1]),
-    [P1] = winners_for_goal(G, [P1,P2]),
-    ok.
-
-test_remove_exess_goals() ->
-    Rules1 = [ {rule, foo} ],
-    Rules1 = remove_exess_goals(Rules1),
-    Rules2 = [ {rule, one}, {rule, two} ],
-    [ {goal, one} ] = remove_exess_goals(Rules2),
-    ok.
-
-test() ->
-    debug("Testing..."),
-    ok = test_remove_exess_goals(),
-    ok = test_winners_for_goal(),
-    ok = test_winners(),
-    press_enter(),
-    ok.
-    

@@ -6,3 +6,7 @@ go: flux
 
 clean: 
 	rm ebin/*
+
+tests:
+	erl -pa ebin -run flux test
+
