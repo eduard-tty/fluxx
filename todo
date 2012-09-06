@@ -2,7 +2,7 @@ TODO -*- mode: org -*-
 #+STARTUP: showall
 #+TODO: HELD TODO ACTIVE DONE
 
-* TODO use git flow
+* ACTIVE use git flow
 * TODO Split into card, board, game, etc 
 * TODO Use proper directory layout
 * TODO Implement rules
