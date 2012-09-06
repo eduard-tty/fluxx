@@ -1,7 +1,10 @@
-* DONE Add all cards
-* DONE Finish meets
+TODO -*- mode: org -*- 
+#+STARTUP: showall
+#+TODO: HELD TODO ACTIVE DONE
+
+* TODO use git flow
+* TODO Split into card, board, game, etc 
 * TODO Use proper directory layout
-* DONE player_meets_goal take other playeres keepers into account
 * TODO Implement rules
 ** TODO Implement Secrets
 * TODO Implement Actions
